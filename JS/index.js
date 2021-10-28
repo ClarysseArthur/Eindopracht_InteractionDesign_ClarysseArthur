@@ -1,7 +1,8 @@
 'use strict'
 
 let map;
-var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2018-013A', '2009-005A', '2006-018A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2015-058D'];
+var markers = [];
+var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2009-005A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2016-025A', '2018-076A', '2020-086A'];
 
 //! SET MARKERS
 const placeMarkers = function (iconBase, icons, features, name, satId) {
@@ -16,9 +17,11 @@ const placeMarkers = function (iconBase, icons, features, name, satId) {
     });
 
     // Add eventlistner marker
-    marker.addListener("click", function() {
-      console.log(marker.id);
+    marker.addListener("click", function () {
+      showSateliteInfo(marker.id);
     })
+
+    markers.push(marker);
   }
 }
 
@@ -37,8 +40,12 @@ function initMap() {
   });
 }
 
-//! SHOW SATELITE DATA
-const showSateliteOnMap = function(lat, long, name, satId){
+const showSateliteInfo = function (dateliteId) {
+
+}
+
+//! SHOW SATELITE DATA ON MAP
+const showSateliteOnMap = function (lat, long, name, satId) {
   const iconBase = "/IMG/";
 
   const icons = {
@@ -61,7 +68,7 @@ const showSateliteOnMap = function(lat, long, name, satId){
 const showSatelite = function (jsonData) {
   let satelite = jsonData[0]
 
-  // console.log(satelite);
+  console.log(satelite);
 
   showSateliteOnMap(satelite.result.geography.lat, satelite.result.geography.lon, satelite.name, satelite.intldes);
 }
@@ -82,7 +89,35 @@ const fetchApiData = function () {
   });
 }
 
+//! UPDATE MARKERS
+const updateMarkers = function () {
+  var requestOptions = {
+    method: 'GET',
+    redirect: 'follow'
+  };
+
+  nssdcIdSateliteIdList.forEach(element => {
+    fetch(`http://aviation-edge.com/v2/public/satelliteDetails?key=15f8f4-e023f5&intldes=${element}`, requestOptions)
+      .then(response => response.text())
+      .then(result => function (result) {
+        let satellite = JSON.parse(result)[0];
+
+        for (let i = 0; i < markers.length; i++) {
+          if (markers[i] == satellite.intldes) {
+            markers[i].position = new google.maps.LatLng(satelite.result.geography.lat, satelite.result.geography.lon);
+            console.log(`Update ${satelite.name}`)
+          }
+        }
+      })
+      .catch(error => console.log('error', error));
+  });
+
+
+}
+
 //! DOM CONTENT LOADED
 document.addEventListener("DOMContentLoaded", function () {
   fetchApiData();
+
+  // setInterval(updateMarkers, 30000);
 })
