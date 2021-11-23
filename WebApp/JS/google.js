@@ -2,17 +2,29 @@
 
 let map;
 var markers = [];
-var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2009-005A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2016-025A', '2018-076A', '2020-086A'];
+var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2009-005A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2016-025A', '2018-076A', '2020-086A', '2020-061K'];
 
 //! SET MARKERS
 const placeMarkers = function (iconBase, icons, features, name, satId) {
   for (let i = 0; i < features.length; i++) {
     // Set marker
+    const markerShadow = new google.maps.MarkerImage(
+      "/IMG/Belgium.png",
+      new google.maps.Size(20, 20)
+    );
+
+    const sateliteMarker = new google.maps.MarkerImage(
+      "/IMG/satelite_big.png",
+      new google.maps.Size(50, 50)
+    );
+
     const marker = new google.maps.Marker({
       position: features[i].position,
+      // icon: sateliteMarker,
       icon: icons[features[i].type].icon,
+      //shadow: markerShadow,
       map: map,
-      title: name,
+      label: name,
       id: satId
     });
 
@@ -21,7 +33,7 @@ const placeMarkers = function (iconBase, icons, features, name, satId) {
       showSateliteInfo(marker.id);
     })
 
-    markers.push(marker);
+    // markers.push(marker);
   }
 }
 
@@ -29,6 +41,8 @@ const placeMarkers = function (iconBase, icons, features, name, satId) {
 function initMap() {
   // 1. CALCULATE LOCATION
   // 2. INIT MAP
+  // 3. Load sqtellites
+
   navigator.geolocation.getCurrentPosition(function (position) {
     let lat = String(position.coords.latitude);
     let long = String(position.coords.longitude);
@@ -38,6 +52,8 @@ function initMap() {
       zoom: 5,
     });
   });
+
+  loadSatellites();
 }
 
 const showSateliteInfo = function (dateliteId) {
@@ -115,9 +131,8 @@ const updateMarkers = function () {
 
 }
 
-//! DOM CONTENT LOADED
-document.addEventListener("DOMContentLoaded", function () {
+const loadSatellites = function () {
   fetchApiData();
 
   // setInterval(updateMarkers, 30000);
-})
+}

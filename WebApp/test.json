@@ -1,0 +1,86 @@
+{
+    "type": "FeatureCollection",
+    "metadata": {
+        "generated": 1637515625,
+        "title": "Satelites",
+        "status": 200
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "type": "satelite",
+                "title": "ISS",
+                "long": 3,
+                "lat": 50,
+                "height": 408000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    3,
+                    50,
+                    408000
+                ]
+            },
+            "id": "1"
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "type": "satelite",
+                "title": "ISS",
+                "long": 3,
+                "lat": 50,
+                "height": 408000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    4,
+                    51,
+                    408000
+                ]
+            },
+            "id": "1"
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "type": "satelite",
+                "title": "ISS",
+                "long": 3,
+                "lat": 50,
+                "height": 408000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    3,
+                    47,
+                    408000
+                ]
+            },
+            "id": "1"
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "type": "satelite",
+                "title": "ISS",
+                "long": 3,
+                "lat": 50,
+                "height": 408000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    6,
+                    48,
+                    408000
+                ]
+            },
+            "id": "1"
+        }
+    ]
+}
