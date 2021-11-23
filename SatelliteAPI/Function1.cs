@@ -66,5 +66,55 @@ namespace SatelliteAPI
 
             return new OkObjectResult(arcgisFormat);
         }
+
+        //? JSON file
+        [FunctionName("GetVisible")]
+        public async Task<IActionResult> GetVisible(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/visible/{lat}/{lon}")] HttpRequest req,
+            string lat,
+            string lon,
+            ILogger log)
+        {
+            SatellitesAbove.Rootobject satellitesAbove = await SatelliteRepository.GetAbove(lat, lon);
+
+            ArcgisFormat.Feature[] features = new ArcgisFormat.Feature[satellitesAbove.info.satcount];
+            int i = 0;
+
+            foreach (var item in satellitesAbove.above)
+            {
+                ArcgisFormat.Properties properties = new ArcgisFormat.Properties()
+                {
+                    country = "/",
+                    launchdate = "/",
+                    name = item.satname,
+                    lat = item.satlat,
+                    lon = item.satlng
+                };
+
+                ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry()
+                {
+                    coordinates = new float[] { item.satlat, item.satlng, 408000 }
+                };
+
+                ArcgisFormat.Feature feature = new ArcgisFormat.Feature()
+                {
+                    properties = properties,
+                    geometry = geometry,
+                    id = $"{i}"
+                };
+
+                features[i] = feature;
+                i++;
+            }
+
+            ArcgisFormat arcgisFormat = new ArcgisFormat()
+            {
+                features = features,
+                metadata = new ArcgisFormat.MetaData()
+            };
+
+            return new OkObjectResult(arcgisFormat);
+        }
+
     }
 }

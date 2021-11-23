@@ -44,5 +44,32 @@ namespace SatelliteAPI.Repositories
             }
         }
 
+        public static async Task<SatellitesAbove.Rootobject> GetAbove(string lat, string lon)
+        {
+            using (HttpClient client = GetClient())
+            {
+                try
+                {
+                    string url = $"https://api.n2yo.com/rest/v1/satellite/above/{lat}/{lon}/10/20/0&apiKey=WNQB9D-3FHVUW-L6SJKF-4SFS";
+
+                    string json = await client.GetStringAsync(url);
+
+                    if (json != null)
+                    {
+                        return JsonConvert.DeserializeObject<SatellitesAbove.Rootobject>(json);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+
     }
 }
