@@ -34,6 +34,9 @@ namespace SatelliteAPI.Models
             public string name { get; set; }
             public float lat { get; set; }
             public float lon { get; set; }
+            public bool isfavorite { get; set; }
+            public bool isshown { get; set; }
+            public string satelliteid { get; set; }
         }
 
         public class Geometry
