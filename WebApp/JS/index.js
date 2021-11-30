@@ -40,7 +40,7 @@ const initMap = function (lat, long) {
                 position: {
                     x: long, //Longitude
                     y: lat, //Latitude
-                    z: 10000000 //Meters
+                    z: 20000000 //Meters
                 },
                 tilt: 0
             }
@@ -65,64 +65,33 @@ const initMap = function (lat, long) {
         };
 
         const geoJSONLayer = new GeoJSONLayer({
-            url: 'http://localhost:7071/api/v1/satellitelocation/{"satellites": [{"name": "1998-067A"},{"name": "2013-008A"},{"name": "2009-005A"},{"name": "1999-068A"},{"name": "2002-022A"},{"name": "2002-022A"},{"name": "2006-044A"},{"name": "2011-061A"},{"name": "2016-025A"},{"name": "2018-076A"},{"name": "2020-086A"},{"name": "2020-061K"}]}',
+            // url: 'https://satellite-id.azurewebsites.net/api/v1/satellitelocation/{"satellites": [{"name": "1998-067A"},{"name": "2013-008A"},{"name": "2009-005A"},{"name": "1999-068A"},{"name": "2002-022A"},{"name": "2002-022A"},{"name": "2006-044A"},{"name": "2011-061A"},{"name": "2016-025A"},{"name": "2018-076A"},{"name": "2020-086A"},{"name": "2020-061K"}]}',
+            url: `http://localhost:7071/api/v1/favoriteenabled`,
             popupTemplate: {
-                title: "Satelite info",
-                content: "Location: {long} {lat} {height} {title}"
+                title: "Satelite info • {name}",
+                content: `<div class="c-detail_master">
+                            <div class="c-detail_child u-detail_child-title">Latitude:</div>
+                            <div class="c-detail_child u-detail_child-data">{lat}</div>
+
+                            <div class="c-detail_child u-detail_child-title">Longitude:</div>
+                            <div class="c-detail_child u-detail_child-data">{lon}</div>
+
+                            <div class="c-detail_child u-detail_child-title">Country:</div>
+                            <div class="c-detail_child u-detail_child-data">{country} <img src="https://flagcdn.com/16x12/{country}.png"></div>
+
+                            <div class="c-detail_child u-detail_child-title">Launch date:</div>
+                            <div class="c-detail_child u-detail_child-data">{launchdate}</div>
+
+                            <div class="c-detail_child u-detail_child-title">Satellite ID:</div>
+                            <div class="c-detail_child u-detail_child-data">{satelliteid}</div>
+                        </div>`
             },
             renderer: renderer
         });
         map.add(geoJSONLayer);  // adds the layer to the map
+        console.warn("DONE");
     });
 }
-
-// const showSatelite = function (json) {
-//     let info = json[0];
-
-//     var satellite = {
-//         type: "Feature",
-//         properties: {
-//             type: "satelite",
-//             title: info.name,
-//             country: info.country,
-//             launchdate: info.launchDate,
-//             long: info.result.geography.lon,
-//             lat: info.result.geography.lat,
-//             height: 408000
-//         },
-//         geometry: {
-//             type: "Point",
-//             coordinates: [
-//                 info.result.geography.lon,
-//                 info.result.geography.lat,
-//                 408000
-//             ]
-//         },
-//         id: "0"
-//     }
-
-//     satellites.features.push(satellite);
-// }
-
-// //! FETCH API
-// const fetchApiData = function (lat, long) {
-//     //TODO Vergeet niet ook nog "eigen" satelieten in de cookies te steken
-//     var requestOptions = {
-//         method: 'GET',
-//         redirect: 'follow'
-//     };
-
-//     nssdcIdSateliteIdList.forEach(element => {
-//         fetch(`http://aviation-edge.com/v2/public/satelliteDetails?key=15f8f4-e023f5&intldes=${element}`, requestOptions)
-//             .then(response => response.text())
-//             .then(result => showSatelite(JSON.parse(result)))
-//             .catch(error => console.log('error', error));
-//     });
-
-    
-//     console.log(satellites);
-//     initMap(lat, long);
-// }
 
 document.addEventListener("DOMContentLoaded", function () {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -130,5 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let long = String(position.coords.longitude);
 
         initMap(lat, long);
+        showSatelliteInfo();
     });
 })
