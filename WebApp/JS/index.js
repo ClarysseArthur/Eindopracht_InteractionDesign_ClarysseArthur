@@ -1,4 +1,5 @@
 "use strict"
+const lanIP = `${window.location.hostname}:5501`;
 
 var map;
 var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2009-005A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2016-025A', '2018-076A', '2020-086A', '2020-061K'];
@@ -13,7 +14,7 @@ var satellites = {
 };
 var satelliteJson;
 
-const initMap = function (lat, long) {
+const initMap = function (lat, long, satSource) {
     console.log(long);
     console.log(lat);
 
@@ -22,7 +23,6 @@ const initMap = function (lat, long) {
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/GeoJSONLayer",
-        "esri/PopupTemplate"
     ], function (esriConfig, Map, SceneView, GeoJSONLayer) {
 
         esriConfig.apiKey = "AAPK8bcad090be7b4becbb6c3bdeb563bd5eUjQg07m8XSZNFJbkx7WLxPK9BoPB_avWjSsxJM2DZeXMPqhSD2DgkO5IsAP-c18v";
@@ -66,10 +66,13 @@ const initMap = function (lat, long) {
 
         const geoJSONLayer = new GeoJSONLayer({
             // url: 'https://satellite-id.azurewebsites.net/api/v1/satellitelocation/{"satellites": [{"name": "1998-067A"},{"name": "2013-008A"},{"name": "2009-005A"},{"name": "1999-068A"},{"name": "2002-022A"},{"name": "2002-022A"},{"name": "2006-044A"},{"name": "2011-061A"},{"name": "2016-025A"},{"name": "2018-076A"},{"name": "2020-086A"},{"name": "2020-061K"}]}',
-            url: `http://localhost:7071/api/v1/favoriteenabled`,
+            // url: `http://localhost:7071/api/v1/favoriteenabled`,
+            // url: "http://localhost:7071/api/v1/visible/3.665970/50.973821",
+            url: satSource,
             popupTemplate: {
                 title: "Satelite info • {name}",
-                content: `<div class="c-detail_master">
+                content: `
+                        <div class="c-detail_master">
                             <div class="c-detail_child u-detail_child-title">Latitude:</div>
                             <div class="c-detail_child u-detail_child-data">{lat}</div>
 
@@ -77,7 +80,7 @@ const initMap = function (lat, long) {
                             <div class="c-detail_child u-detail_child-data">{lon}</div>
 
                             <div class="c-detail_child u-detail_child-title">Country:</div>
-                            <div class="c-detail_child u-detail_child-data">{country} <img src="https://flagcdn.com/16x12/{country}.png"></div>
+                            <div class="c-detail_child u-detail_child-data">{country}</div>
 
                             <div class="c-detail_child u-detail_child-title">Launch date:</div>
                             <div class="c-detail_child u-detail_child-data">{launchdate}</div>
@@ -89,16 +92,26 @@ const initMap = function (lat, long) {
             renderer: renderer
         });
         map.add(geoJSONLayer);  // adds the layer to the map
+
+
         console.warn("DONE");
     });
 }
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
     navigator.geolocation.getCurrentPosition(function (position) {
         let lat = String(position.coords.latitude);
         let long = String(position.coords.longitude);
 
-        initMap(lat, long);
-        showSatelliteInfo();
+        if (document.querySelector(".js-index")) {
+            initMap(lat, long, "http://localhost:7071/api/v1/favorites");
+            showSatelliteInfo("http://localhost:7071/api/v1/favorites");
+        }
+        else {
+            initMap(lat, long, `http://localhost:7071/api/v1/visible/${lat}/${long}`);
+            showSatelliteInfo(`http://localhost:7071/api/v1/visible/${lat}/${long}`);
+        }
     });
 })

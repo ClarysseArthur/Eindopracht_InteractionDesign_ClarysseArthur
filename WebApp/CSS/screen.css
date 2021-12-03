@@ -62,13 +62,26 @@ html {
 
 /*? SETTINGS */
 .c-settings {
-    width: auto;
-    height: auto;
+    width: 300px;
     position: absolute;
     top: 15px;
     left: 55px;
     background-color: var(--global-background);
     display: grid;
+    grid-template-columns: 80% 10% 10%;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.c-setting_link{
+    grid-column: 1 / 4;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+}
+
+.c-setting_link-a:visited{
+    color: black;
 }
 
 .c-settings_fav-icon {
@@ -86,6 +99,11 @@ html {
 
 .c-detail_child{
   
+}
+
+.c-detail_child-favorite{
+    width: 15px;
+    height: 15px;
 }
 
 /*------------------------------------*\

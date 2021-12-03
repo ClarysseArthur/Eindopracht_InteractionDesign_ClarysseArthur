@@ -1,19 +1,15 @@
-const fillTable = function (satName, isEnabled, isFavorite, country) {
-    let addToTable = `<tr>
-                        <td>
-                            <img src="https://flagcdn.com/16x12/${country}.png">
-                        </td>
-                        <td>
+const fillTable = function (satName, isEnabled, isFavorite) {
+    let addToTable = `<div class"">
                             ${satName}
-                        </td>
-                        <td>
+                        </div>
+                        <div class"">
                             ${isEnabled}
-                        </td>
-                        <td>
+                        </div>
+                        <div class"">
                             ${isFavorite}
-                        </td>
-                    </tr>`;
-    document.querySelector(".js-table").innerHTML += addToTable;
+                        </div>`;
+
+    document.querySelector(".js-settings").innerHTML += addToTable;
 }
 
 const addFavoriteApi = function (satId) {
@@ -85,7 +81,7 @@ const parseData = function (json) {
 
 
 
-        fillTable(element.properties.name, en, fav, element.properties.country);
+        fillTable(element.properties.satName, en, fav);
         setEventListners();
     });
 }
@@ -94,13 +90,13 @@ const getAllFavorites = function () {
 
 }
 
-const showSatelliteInfo = function () {
+const showSatelliteInfo = function (satSource) {
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
     };
 
-    fetch("http://localhost:7071/api/v1/favorite", requestOptions)
+    fetch(satSource, requestOptions)
         .then(response => response.text())
         .then(result => parseData(JSON.parse(result).features))
         .catch(error => console.log('error', error));
