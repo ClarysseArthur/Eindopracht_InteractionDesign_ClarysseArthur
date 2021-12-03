@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
+using SatelliteAPI.Entities;
 using SatelliteAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -18,19 +21,19 @@ namespace SatelliteAPI.Repositories
             return client;
         }
 
-        public static async Task<Satellite> GetSatellite(string satCode)
+        public static async Task<Satellite> GetSatellite(string satId)
         {
             using (HttpClient client = GetClient())
             {
                 try
                 {
-                    string url = $"http://aviation-edge.com/v2/public/satelliteDetails?key=15f8f4-e023f5&intldes={satCode}";
+                    string url = $"https://api.n2yo.com/rest/v1/satellite/positions/{satId}/41.702/-76.014/0/1/&apiKey=WNQB9D-3FHVUW-L6SJKF-4SFS";
 
                     string json = await client.GetStringAsync(url);
 
                     if (json != null)
                     {
-                        return JsonConvert.DeserializeObject<Satellite>(json.Substring(1, json.Length - 3));
+                        return JsonConvert.DeserializeObject<Satellite>(json);
                     }
                     else
                     {
@@ -44,32 +47,48 @@ namespace SatelliteAPI.Repositories
             }
         }
 
-        public static async Task<SatellitesAbove.Rootobject> GetAbove(string lat, string lon)
+        public static async Task<bool> IsFavorite(string satId)
         {
-            using (HttpClient client = GetClient())
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=stinteractiondesign;AccountKey=Z04MMiQZNqcMaRVm5dtcadog++7Ze6JB0h3shxF2LxOZ20CG0zXST4pUKkS1PuN/HPAV2p02A1l17fzZF3cj8Q==;EndpointSuffix=core.windows.net";
+
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+            CloudTable cloudTable = cloudTableClient.GetTableReference("SatelliteFavorites");
+
+            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>().Where(TableQuery.GenerateFilterCondition("RowKey", "eq", satId));
+            var queryResult = await cloudTable.ExecuteQuerySegmentedAsync<SatelliteEntity>(selectQuery, null);
+
+            foreach (var item in queryResult)
             {
-                try
+                if(item != null)
                 {
-                    string url = $"https://api.n2yo.com/rest/v1/satellite/above/{lat}/{lon}/10/20/0&apiKey=WNQB9D-3FHVUW-L6SJKF-4SFS";
-
-                    string json = await client.GetStringAsync(url);
-
-                    if (json != null)
-                    {
-                        return JsonConvert.DeserializeObject<SatellitesAbove.Rootobject>(json);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
+                    return true;
                 }
             }
+
+            return false;
         }
 
+        public static async Task<bool> isShown(string satId)
+        {
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=stinteractiondesign;AccountKey=Z04MMiQZNqcMaRVm5dtcadog++7Ze6JB0h3shxF2LxOZ20CG0zXST4pUKkS1PuN/HPAV2p02A1l17fzZF3cj8Q==;EndpointSuffix=core.windows.net";
 
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+            CloudTable cloudTable = cloudTableClient.GetTableReference("SatelliteFavorites");
+
+            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>().Where(TableQuery.GenerateFilterCondition("RowKey", "eq", satId)).Where(TableQuery.GenerateFilterConditionForBool("IsShown", "eq", true));
+            var queryResult = await cloudTable.ExecuteQuerySegmentedAsync<SatelliteEntity>(selectQuery, null);
+
+            foreach (var item in queryResult)
+            {
+                if (item != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

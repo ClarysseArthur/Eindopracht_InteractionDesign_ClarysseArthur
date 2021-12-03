@@ -95,7 +95,16 @@ namespace SatelliteAPI
 
             foreach (var item in queryResult)
             {
-                Satellite satellite = await SatelliteRepository.GetSatellite(item.PartitionKey);
+                Satellite satellite = new Satellite();
+                try
+                {
+                    satellite = await SatelliteRepository.GetSatellite(item.PartitionKey);
+                }
+                catch (Exception)
+                {
+                    
+                }
+                
 
                 ArcgisFormat.Properties properties = new ArcgisFormat.Properties()
                 {

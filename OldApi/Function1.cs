@@ -88,7 +88,8 @@ namespace SatelliteAPI
                     launchdate = "/",
                     name = item.satname,
                     lat = item.satlat,
-                    lon = item.satlng
+                    lon = item.satlng,
+                    satelliteid = item.intDesignator.ToString()
                 };
 
                 ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry()

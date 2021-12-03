@@ -8,22 +8,28 @@ namespace SatelliteAPI.Models
 {
     public class Satellite
     {
-        public string Country { get; set; }
-        public string Launchdate { get; set; }
-        public string Name { get; set; }
+        public Info info { get; set; }
+        public Position[] positions { get; set; }
 
-        public Result result { get; set; }
-
-        public class Result
+        public class Info
         {
-            public Geography geography { get; set; }
+            public string satname { get; set; }
+            public int satid { get; set; }
+            public int transactionscount { get; set; }
         }
 
-        public class Geography
+        public class Position
         {
-            public float alt { get; set; }
-            public float lat { get; set; }
-            public float lon { get; set; }
+            public float satlatitude { get; set; }
+            public float satlongitude { get; set; }
+            public float sataltitude { get; set; }
+            public float azimuth { get; set; }
+            public float elevation { get; set; }
+            public float ra { get; set; }
+            public float dec { get; set; }
+            public int timestamp { get; set; }
+            public bool eclipsed { get; set; }
         }
+
     }
 }

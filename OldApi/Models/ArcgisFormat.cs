@@ -29,16 +29,14 @@ namespace SatelliteAPI.Models
         public class Properties
         {
             public string type { get { return "Satellite"; } }
-            public string SatID { get; set; }
-            public string SatName { get; set; }
-            public double SatAltitude { get; set; }
-            public double SatLatitude { get; set; }
-            public double SatLongitude { get; set; }
+            public string country { get; set; }
+            public string launchdate { get; set; }
+            public string name { get; set; }
+            public float lat { get; set; }
+            public float lon { get; set; }
             public bool isfavorite { get; set; }
             public bool isshown { get; set; }
-
-            //public string country { get; set; }
-            //public string launchdate { get; set; }
+            public string satelliteid { get; set; }
         }
 
         public class Geometry
