@@ -169,7 +169,8 @@ namespace SatelliteAPI
 
             ArcgisFormat arcgisFormat = new ArcgisFormat()
             {
-                features = new ArcgisFormat.Feature[all.above.Length]
+                features = new ArcgisFormat.Feature[all.above.Length],
+                metadata = new ArcgisFormat.MetaData()
             };
             
 
