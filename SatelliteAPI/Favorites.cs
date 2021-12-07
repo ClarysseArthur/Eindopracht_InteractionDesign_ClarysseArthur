@@ -157,5 +157,52 @@ namespace SatelliteAPI
 
             return new OkObjectResult("200 ok");
         }
+
+        [FunctionName("GetAbove")]
+        public static async Task<IActionResult> GetAbove(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/above")] HttpRequest req,
+            ILogger log)
+        {
+            int i = 0;
+
+            SatAbove all = await SatelliteRepository.GetAbove();
+
+            ArcgisFormat arcgisFormat = new ArcgisFormat()
+            {
+                features = new ArcgisFormat.Feature[all.above.Length]
+            };
+            
+
+            foreach (var satellite in all.above)
+            {
+                ArcgisFormat.Feature feature = new ArcgisFormat.Feature();
+
+                ArcgisFormat.Properties properties = new ArcgisFormat.Properties()
+                {
+                    SatID = satellite.satid.ToString(),
+                    SatName = satellite.satname,
+                    SatAltitude = satellite.satalt,
+                    SatLatitude = satellite.satalt,
+                    SatLongitude = satellite.satlng,
+                    isfavorite = false,
+                    isshown = true,
+                };
+
+                ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry()
+                {
+                    coordinates = new float[] { satellite.satlat, satellite.satlng, 40000 }
+                };
+
+                feature.properties = properties;
+                feature.geometry = geometry;
+                feature.id = "";
+
+                arcgisFormat.features[i] = feature;
+
+                i++;
+            }
+
+            return new OkObjectResult(arcgisFormat);
+        }
     }
 }
