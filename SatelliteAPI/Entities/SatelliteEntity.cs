@@ -14,10 +14,10 @@ namespace SatelliteAPI.Entities
 
         }
 
-        public SatelliteEntity(string satId, string guid)
+        public SatelliteEntity(string satId)
         {
-            this.PartitionKey = satId;
-            this.RowKey = guid;
+            this.PartitionKey = "Satellite";
+            this.RowKey = satId;
         }
         public bool IsShown { get; set; }
     }

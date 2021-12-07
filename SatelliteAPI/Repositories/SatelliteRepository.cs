@@ -77,14 +77,18 @@ namespace SatelliteAPI.Repositories
             CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
             CloudTable cloudTable = cloudTableClient.GetTableReference("SatelliteFavorites");
 
-            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>().Where(TableQuery.GenerateFilterCondition("RowKey", "eq", satId)).Where(TableQuery.GenerateFilterConditionForBool("IsShown", "eq", true));
+            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>().Where(TableQuery.GenerateFilterCondition("RowKey", "eq", satId));
             var queryResult = await cloudTable.ExecuteQuerySegmentedAsync<SatelliteEntity>(selectQuery, null);
 
             foreach (var item in queryResult)
             {
-                if (item != null)
+                if (item.IsShown)
                 {
                     return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
 
