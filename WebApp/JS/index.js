@@ -1,8 +1,7 @@
 "use strict"
-const lanIP = `${window.location.hostname}:5501`;
 
 var map;
-var nssdcIdSateliteIdList = ['1998-067A', '2013-008A', '2009-005A', '1999-068A', '2002-022A', '2006-044A', '2011-061A', '2016-025A', '2018-076A', '2020-086A', '2020-061K'];
+
 var satellites = {
     type: "FeatureCollection",
     metadata: {
@@ -65,28 +64,19 @@ const initMap = function (lat, long, satSource) {
         };
 
         const geoJSONLayer = new GeoJSONLayer({
-            // url: 'https://satellite-id.azurewebsites.net/api/v1/satellitelocation/{"satellites": [{"name": "1998-067A"},{"name": "2013-008A"},{"name": "2009-005A"},{"name": "1999-068A"},{"name": "2002-022A"},{"name": "2002-022A"},{"name": "2006-044A"},{"name": "2011-061A"},{"name": "2016-025A"},{"name": "2018-076A"},{"name": "2020-086A"},{"name": "2020-061K"}]}',
-            // url: `http://localhost:7071/api/v1/favoriteenabled`,
-            // url: "http://localhost:7071/api/v1/visible/3.665970/50.973821",
             url: satSource,
             popupTemplate: {
-                title: "Satelite info • {name}",
+                title: "Satelite info • {satName}",
                 content: `
                         <div class="c-detail_master">
                             <div class="c-detail_child u-detail_child-title">Latitude:</div>
-                            <div class="c-detail_child u-detail_child-data">{lat}</div>
+                            <div class="c-detail_child u-detail_child-data">{satLatitude}</div>
 
                             <div class="c-detail_child u-detail_child-title">Longitude:</div>
-                            <div class="c-detail_child u-detail_child-data">{lon}</div>
-
-                            <div class="c-detail_child u-detail_child-title">Country:</div>
-                            <div class="c-detail_child u-detail_child-data">{country}</div>
-
-                            <div class="c-detail_child u-detail_child-title">Launch date:</div>
-                            <div class="c-detail_child u-detail_child-data">{launchdate}</div>
+                            <div class="c-detail_child u-detail_child-data">{satLongitude}</div>
 
                             <div class="c-detail_child u-detail_child-title">Satellite ID:</div>
-                            <div class="c-detail_child u-detail_child-data">{satelliteid}</div>
+                            <div class="c-detail_child u-detail_child-data">{satID}</div>
                         </div>`
             },
             renderer: renderer
@@ -106,12 +96,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let long = String(position.coords.longitude);
 
         if (document.querySelector(".js-index")) {
-            initMap(lat, long, "http://localhost:7071/api/v1/favorites");
-            showSatelliteInfo("http://localhost:7071/api/v1/favorites");
+            initMap(lat, long, "https://satellite-id.azurewebsites.net/api/v1/favorites");
+            showSatelliteInfo("https://satellite-id.azurewebsites.net/api/v1/favorites");
         }
         else {
-            initMap(lat, long, `http://localhost:7071/api/v1/visible/${lat}/${long}`);
-            showSatelliteInfo(`http://localhost:7071/api/v1/visible/${lat}/${long}`);
+            initMap(lat, long, `https://satellite-id.azurewebsites.net/api/v1/above`);
+            showSatelliteInfo(`https://satellite-id.azurewebsites.net/api/v1/above`);
         }
     });
 })
