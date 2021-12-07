@@ -134,5 +134,28 @@ namespace SatelliteAPI
                 return new OkObjectResult(newEntity);
             }
         }
+
+        [FunctionName("DeleteFavorite")]
+        public static async Task<IActionResult> DeleteFavorite(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "v1/favorites/{satId}")] HttpRequest req,
+            string satId,
+            ILogger log)
+        {
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=stinteractiondesign;AccountKey=Z04MMiQZNqcMaRVm5dtcadog++7Ze6JB0h3shxF2LxOZ20CG0zXST4pUKkS1PuN/HPAV2p02A1l17fzZF3cj8Q==;EndpointSuffix=core.windows.net";
+
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+            CloudTable cloudTable = cloudTableClient.GetTableReference("SatelliteFavorites");
+
+            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>().Where(TableQuery.GenerateFilterCondition("RowKey", "eq", satId));
+            var queryResult = await cloudTable.ExecuteQuerySegmentedAsync<SatelliteEntity>(selectQuery, null);
+
+            SatelliteEntity old = queryResult.Results.ToArray()[0];
+
+            TableOperation delete = TableOperation.Delete(old);
+            await cloudTable.ExecuteAsync(delete);
+
+            return new OkObjectResult("200 ok");
+        }
     }
 }
