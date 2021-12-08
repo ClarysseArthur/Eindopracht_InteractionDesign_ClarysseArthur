@@ -1,11 +1,15 @@
-const fillTable = function (satName, isEnabled, isFavorite) {
-    let addToTable = `<div class"">
+const fillTable = function (satName, isEnabled, isFavorite, id) {
+    let addToTable = `<div class="c-settings_child c-setting_child-name">
                             ${satName}
                         </div>
-                        <div class"">
+                        <div class="c-settings_child">
                             ${isEnabled}
+                            <label class="c-label c-label--option c-custom-toggle" for="toggle${id}">
+                                <span class="c-custom-toggle__fake-input js-toggle">
+                                </span>
+                            </label>
                         </div>
-                        <div class"">
+                        <div class="c-settings_child c-settings_child-star">
                             ${isFavorite}
                         </div>`;
 
@@ -22,6 +26,10 @@ const addFavoriteApi = function (satId) {
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+
+    let element = document.querySelector(`svg[data-satellite-name="${satId}"]`);
+    element.classList.toggle("c-settings_fav-icon_fav");
+    element.setAttribute("data-satellite-isfavorite", true);
 }
 
 const deleteFavoriteApi = function (satId) {
@@ -31,11 +39,17 @@ const deleteFavoriteApi = function (satId) {
         method: 'DELETE',
         redirect: 'follow'
       };
-      
+
       fetch(`https://satellite-id.azurewebsites.net/api/v1/favorites/${satId}`, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+
+    let element = document.querySelector(`svg[data-satellite-name="${satId}"]`);
+    element.classList.toggle("c-settings_fav-icon_fav");
+    element.setAttribute("data-satellite-isfavorite", false);
+
+    console.log();
 }
 
 const setEventListners = function () {
@@ -58,9 +72,9 @@ const setEventListners = function () {
             var requestOptions = {
                 method: 'PUT',
                 redirect: 'follow'
-              };
-              
-              fetch(`https://satellite-id.azurewebsites.net/api/v1/favorites/${this.getAttribute("data-satellite-name")}`, requestOptions)
+            };
+
+            fetch(`https://satellite-id.azurewebsites.net/api/v1/favorites/${this.getAttribute("data-satellite-name")}`, requestOptions)
                 .then(response => response.text())
                 .then(result => console.log(result))
                 .catch(error => console.log('error', error));
@@ -68,33 +82,48 @@ const setEventListners = function () {
     });
 }
 
-const parseData = function (json) {
+const parseData = function (json, isFavPage) {
     console.log(json);
+
+    let i = 0;
 
     json.forEach(element => {
         var fav = "";
         var en = "";
 
         if (element.properties.isfavorite) {
-            fav = `<svg xmlns="http://www.w3.org/2000/svg" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isfavorite}" class="c-settings_fav-icon js-fav-icon" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27L18.18,21l-1.64-7.03L22,9.24l-7.19-0.61L12,2L9.19,8.63L2,9.24l5.46,4.73L5.82,21L12,17.27z"/></g></svg>`;
+            fav = `<svg xmlns="http://www.w3.org/2000/svg" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isfavorite}" class="c-settings_fav-icon c-settings_fav-icon_fav js-fav-icon" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27L18.18,21l-1.64-7.03L22,9.24l-7.19-0.61L12,2L9.19,8.63L2,9.24l5.46,4.73L5.82,21L12,17.27z"/></g></svg>`;
         }
         else {
-            fav = `<svg xmlns="http://www.w3.org/2000/svg" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isfavorite}" class="c-settings_fav-icon js-fav-icon u-settings_fav-icon--no" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 7.13l.97 2.29.47 1.11 1.2.1 2.47.21-1.88 1.63-.91.79.27 1.18.56 2.41-2.12-1.28-1.03-.64-1.03.62-2.12 1.28.56-2.41.27-1.18-.91-.79-1.88-1.63 2.47-.21 1.2-.1.47-1.11.97-2.27M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/></svg>`;
+            fav = `<svg xmlns="http://www.w3.org/2000/svg" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isfavorite}" class="c-settings_fav-icon js-fav-icon" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27L18.18,21l-1.64-7.03L22,9.24l-7.19-0.61L12,2L9.19,8.63L2,9.24l5.46,4.73L5.82,21L12,17.27z"/></g></svg>`;
         }
 
         if (element.properties.isshown) {
-            en = `<input class="js-enabled-checkbox" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isshown}" checked type="checkbox" />`;
+            en = `<input id="toggle${i}" class="js-enabled-checkbox c-option c-option--hidden c-option-toggle o-hide-accessible" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isshown}" checked type="checkbox" />`;
         }
         else {
-            en = `<input class="js-enabled-checkbox" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isshown}" type="checkbox" />`;
+            en = `<input id="toggle${i}" class="js-enabled-checkbox c-option c-option--hidden c-option-toggle o-hide-accessible" data-satellite-name="${element.properties.satID}" data-satellite-isfavorite="${element.properties.isshown}" type="checkbox" />`;
         }
 
-        fillTable(element.properties.satName, en, fav);
+        fillTable(element.properties.satName, en, fav, i);
         setEventListners();
+
+        i++;
     });
+
+    if (!isFavPage){
+        document.querySelectorAll(".js-toggle").forEach(element => {
+            element.classList.add("u-disabled");
+        });
+    
+    
+        document.querySelectorAll(".js-enabled-checkbox").forEach(element => {
+            element.disabled = true;
+        });
+    }   
 }
 
-const showSatelliteInfo = function (satSource) {
+const showSatelliteInfo = function (satSource, isFavPage) {
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
@@ -102,6 +131,6 @@ const showSatelliteInfo = function (satSource) {
 
     fetch(satSource, requestOptions)
         .then(response => response.text())
-        .then(result => parseData(JSON.parse(result).features))
+        .then(result => parseData(JSON.parse(result).features, isFavPage))
         .catch(error => console.log('error', error));
 }

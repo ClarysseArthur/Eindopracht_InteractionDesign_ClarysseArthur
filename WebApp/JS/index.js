@@ -97,11 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (document.querySelector(".js-index")) {
             initMap(lat, long, "https://satellite-id.azurewebsites.net/api/v1/favorites");
-            showSatelliteInfo("https://satellite-id.azurewebsites.net/api/v1/favorites");
+            showSatelliteInfo("https://satellite-id.azurewebsites.net/api/v1/favorites", true);
         }
         else {
             initMap(lat, long, `https://satellite-id.azurewebsites.net/api/v1/above`);
-            showSatelliteInfo(`https://satellite-id.azurewebsites.net/api/v1/above`);
+            showSatelliteInfo(`https://satellite-id.azurewebsites.net/api/v1/above`, false);
         }
     });
 })
