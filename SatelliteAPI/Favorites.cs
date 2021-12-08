@@ -165,6 +165,25 @@ namespace SatelliteAPI
         {
             int i = 0;
 
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=stinteractiondesign;AccountKey=Z04MMiQZNqcMaRVm5dtcadog++7Ze6JB0h3shxF2LxOZ20CG0zXST4pUKkS1PuN/HPAV2p02A1l17fzZF3cj8Q==;EndpointSuffix=core.windows.net";
+
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+            CloudTable cloudTable = cloudTableClient.GetTableReference("SatelliteFavorites");
+
+            TableQuery<SatelliteEntity> selectQuery = new TableQuery<SatelliteEntity>();
+            var queryResult = await cloudTable.ExecuteQuerySegmentedAsync<SatelliteEntity>(selectQuery, null);
+            SatelliteEntity[] favSatLijst = queryResult.Results.ToArray();
+
+            string[] satIds = new string[favSatLijst.Length];
+            
+            foreach (var sat in favSatLijst)
+            {
+                satIds[i] = sat.RowKey;    
+            }
+
+            i = 0;
+
             SatAbove all = await SatelliteRepository.GetAbove();
 
             ArcgisFormat arcgisFormat = new ArcgisFormat()
@@ -185,9 +204,15 @@ namespace SatelliteAPI
                     SatAltitude = satellite.satalt,
                     SatLatitude = satellite.satalt,
                     SatLongitude = satellite.satlng,
-                    isfavorite = false,
                     isshown = true,
                 };
+
+                int pos = Array.IndexOf(satIds, satellite.satid.ToString());
+
+                if (pos > -1)
+                {
+                    properties.isfavorite = true;
+                }
 
                 ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry()
                 {
