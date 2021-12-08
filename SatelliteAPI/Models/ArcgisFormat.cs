@@ -23,7 +23,7 @@ namespace SatelliteAPI.Models
             public string type { get { return "Feature"; } }
             public Properties properties { get; set; }
             public Geometry geometry { get; set; }
-            public string id { get; set; }
+            public int id { get; set; }
         }
 
         public class Properties

@@ -59,7 +59,7 @@ namespace SatelliteAPI
                 {
                     properties = properties,
                     geometry = geometry,
-                    id = i.ToString()
+                    id = i
                 };
 
                 features[i] = feature;
@@ -196,7 +196,7 @@ namespace SatelliteAPI
 
                 feature.properties = properties;
                 feature.geometry = geometry;
-                feature.id = "";
+                feature.id = i;
 
                 arcgisFormat.features[i] = feature;
 
