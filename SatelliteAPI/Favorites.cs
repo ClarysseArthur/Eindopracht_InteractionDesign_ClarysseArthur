@@ -41,7 +41,7 @@ namespace SatelliteAPI
 
                 ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry
                 {
-                    coordinates = new float[] { satData.positions[0].satlatitude, satData.positions[0].satlongitude, 40000}
+                    coordinates = new float[] { satData.positions[0].satlongitude, satData.positions[0].satlatitude, 40000 }
                 };
 
                 ArcgisFormat.Properties properties = new ArcgisFormat.Properties
