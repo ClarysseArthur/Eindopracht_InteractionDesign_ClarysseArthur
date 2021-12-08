@@ -191,7 +191,7 @@ namespace SatelliteAPI
 
                 ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry()
                 {
-                    coordinates = new float[] { satellite.satlat, satellite.satlng, 40000 }
+                    coordinates = new float[] { satellite.satlat, satellite.satlng, 400000 }
                 };
 
                 feature.properties = properties;
