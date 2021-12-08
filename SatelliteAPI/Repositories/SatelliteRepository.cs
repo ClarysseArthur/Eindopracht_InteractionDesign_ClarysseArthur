@@ -101,7 +101,7 @@ namespace SatelliteAPI.Repositories
             {
                 try
                 {
-                    string url = "https://api.n2yo.com/rest/v1/satellite/above/3.666197/50.973739/0/30/0/&apiKey=WNQB9D-3FHVUW-L6SJKF-4SFS";
+                    string url = "https://api.n2yo.com/rest/v1/satellite/above/3.666197/50.973739/0/20/0/&apiKey=WNQB9D-3FHVUW-L6SJKF-4SFS";
 
                     string json = await client.GetStringAsync(url);
 
