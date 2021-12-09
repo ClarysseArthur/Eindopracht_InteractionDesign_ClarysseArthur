@@ -1,6 +1,6 @@
 "use strict"
 
-var map;
+var map, geoJSONLayer, geo, satS, ren;
 var settingsState = false;
 
 var satellites = {
@@ -24,6 +24,7 @@ const initMap = function (lat, long, satSource) {
         "esri/views/SceneView",
         "esri/layers/GeoJSONLayer",
     ], function (esriConfig, Map, SceneView, GeoJSONLayer) {
+        geo = GeoJSONLayer;
 
         esriConfig.apiKey = "AAPK8bcad090be7b4becbb6c3bdeb563bd5eUjQg07m8XSZNFJbkx7WLxPK9BoPB_avWjSsxJM2DZeXMPqhSD2DgkO5IsAP-c18v";
 
@@ -33,7 +34,7 @@ const initMap = function (lat, long, satSource) {
             ground: "world-elevation", //Elevation service
         });
 
-        
+
 
         const view = new SceneView({
             container: "viewDiv",
@@ -66,7 +67,9 @@ const initMap = function (lat, long, satSource) {
             }]
         };
 
-        const geoJSONLayer = new GeoJSONLayer({
+        ren = renderer;
+
+        geoJSONLayer = new GeoJSONLayer({
             url: satSource,
             popupTemplate: {
                 title: "Satelite info • {satName}",
@@ -84,35 +87,57 @@ const initMap = function (lat, long, satSource) {
             },
             renderer: renderer
         });
-        
-        geoJSONLayer.on("click", function(){
+
+        geoJSONLayer.on("click", function () {
             console.error("end");
         })
-        
-        map.add(geoJSONLayer);  // adds the layer to the map
 
+        map.add(geoJSONLayer);  // adds the layer to the map
     });
 }
 
 
+const refresh = function(){
+    console.log("click");
+    map.remove(geoJSONLayer);
+
+    const geoJSONLayer2 = new geo({
+        url: satS,
+        popupTemplate: {
+            title: "Satelite info • {satName}",
+            content: `
+                    <div class="c-detail_master">
+                        <div class="c-detail_child u-detail_child-title">Latitude:</div>
+                        <div class="c-detail_child u-detail_child-data">{satLatitude}</div>
+
+                        <div class="c-detail_child u-detail_child-title">Longitude:</div>
+                        <div class="c-detail_child u-detail_child-data">{satLongitude}</div>
+
+                        <div class="c-detail_child u-detail_child-title">Satellite ID:</div>
+                        <div class="c-detail_child u-detail_child-data">{satID}</div>
+                    </div>`
+        },
+        renderer: ren
+    });
+
+    map.add(geoJSONLayer2);
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector(".js-burger").addEventListener("click", function(){
-        console.log("Iets?!");
-        document.querySelector(".js-settings").classList.toggle("c-settings_closed");
-    })
-
     navigator.geolocation.getCurrentPosition(function (position) {
         let lat = String(position.coords.latitude);
         let long = String(position.coords.longitude);
 
         if (document.querySelector(".js-index")) {
-            initMap(lat, long, "https://satellite-id.azurewebsites.net/api/v1/favorites");
-            showSatelliteInfo("https://satellite-id.azurewebsites.net/api/v1/favorites", true);
+            satS = "https://satellite-id.azurewebsites.net/api/v1/favorites";
+            initMap(lat, long, satS);
+            showSatelliteInfo(satS, true);
         }
         else {
-            initMap(lat, long, `https://satellite-id.azurewebsites.net/api/v1/above`);
-            showSatelliteInfo(`https://satellite-id.azurewebsites.net/api/v1/above`, false);
+            satS = `https://satellite-id.azurewebsites.net/api/v1/above`;
+            initMap(lat, long, satS);
+            showSatelliteInfo(satS, false);
         }
     });
 })

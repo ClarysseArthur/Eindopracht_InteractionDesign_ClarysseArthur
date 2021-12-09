@@ -38,9 +38,9 @@ const deleteFavoriteApi = function (satId) {
     var requestOptions = {
         method: 'DELETE',
         redirect: 'follow'
-      };
+    };
 
-      fetch(`https://satellite-id.azurewebsites.net/api/v1/favorites/${satId}`, requestOptions)
+    fetch(`https://satellite-id.azurewebsites.net/api/v1/favorites/${satId}`, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -111,16 +111,16 @@ const parseData = function (json, isFavPage) {
         i++;
     });
 
-    if (!isFavPage){
+    if (!isFavPage) {
         document.querySelectorAll(".js-toggle").forEach(element => {
             element.classList.add("u-disabled");
         });
-    
-    
+
+
         document.querySelectorAll(".js-enabled-checkbox").forEach(element => {
             element.disabled = true;
         });
-    }   
+    }
 }
 
 const showSatelliteInfo = function (satSource, isFavPage) {
@@ -133,4 +133,16 @@ const showSatelliteInfo = function (satSource, isFavPage) {
         .then(response => response.text())
         .then(result => parseData(JSON.parse(result).features, isFavPage))
         .catch(error => console.log('error', error));
+}
+
+function test() {
+    document.querySelector(".js-settings").classList.toggle("c-settings_closed");
+
+    if (document.querySelector(".js-burger_button").innerHTML == '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="c-settings_burger" ><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>') {
+        document.querySelector(".js-burger_button").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="c-settings_burger" ><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>';
+    }
+    else {
+        console.log(document.querySelector(".js-burger_button").innerHTML);
+        document.querySelector(".js-burger_button").innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="c-settings_burger" ><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>';
+    }
 }
