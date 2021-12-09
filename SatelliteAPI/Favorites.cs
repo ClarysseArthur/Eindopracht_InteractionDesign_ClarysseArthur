@@ -39,10 +39,16 @@ namespace SatelliteAPI
             {
                 Satellite satData = await SatelliteRepository.GetSatellite(satellite.RowKey);
 
-                ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry
+                ArcgisFormat.Geometry geometry = new ArcgisFormat.Geometry();
+
+                if (satellite.IsShown)
                 {
-                    coordinates = new float[] { satData.positions[0].satlongitude, satData.positions[0].satlatitude, 40000 }
-                };
+                    geometry.coordinates = new float[] { satData.positions[0].satlongitude, satData.positions[0].satlatitude, 400000 };
+                }
+                else
+                {
+                    geometry.coordinates = new float[] { 0 };
+                }
 
                 ArcgisFormat.Properties properties = new ArcgisFormat.Properties
                 {
@@ -94,7 +100,7 @@ namespace SatelliteAPI
 
             TableOperation insert = TableOperation.Insert(satellite);
             await cloudTable.ExecuteAsync(insert);
-            
+
             return new OkObjectResult(satellite);
         }
 
@@ -176,10 +182,10 @@ namespace SatelliteAPI
             SatelliteEntity[] favSatLijst = queryResult.Results.ToArray();
 
             string[] satIds = new string[favSatLijst.Length];
-            
+
             foreach (var sat in favSatLijst)
             {
-                satIds[i] = sat.RowKey;    
+                satIds[i] = sat.RowKey;
             }
 
             i = 0;
@@ -191,7 +197,7 @@ namespace SatelliteAPI
                 features = new ArcgisFormat.Feature[all.above.Length],
                 metadata = new ArcgisFormat.MetaData()
             };
-            
+
 
             foreach (var satellite in all.above)
             {
