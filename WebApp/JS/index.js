@@ -99,7 +99,7 @@ const initMap = function (lat, long, satSource) {
 
 const refresh = function(){
     console.log("click");
-    map.remove(geoJSONLayer);
+    map.removeAll();
 
     const geoJSONLayer2 = new geo({
         url: satS,
