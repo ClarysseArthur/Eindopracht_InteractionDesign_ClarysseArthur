@@ -1,6 +1,7 @@
 "use strict"
 
 var map;
+var settingsState = false;
 
 var satellites = {
     type: "FeatureCollection",
@@ -31,6 +32,8 @@ const initMap = function (lat, long, satSource) {
             basemap: "arcgis-imagery",
             ground: "world-elevation", //Elevation service
         });
+
+        
 
         const view = new SceneView({
             container: "viewDiv",
@@ -81,16 +84,24 @@ const initMap = function (lat, long, satSource) {
             },
             renderer: renderer
         });
+        
+        geoJSONLayer.on("click", function(){
+            console.error("end");
+        })
+        
         map.add(geoJSONLayer);  // adds the layer to the map
 
-
-        console.warn("DONE");
     });
 }
 
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector(".js-burger").addEventListener("click", function(){
+        console.log("Iets?!");
+        document.querySelector(".js-settings").classList.toggle("c-settings_closed");
+    })
+
     navigator.geolocation.getCurrentPosition(function (position) {
         let lat = String(position.coords.latitude);
         let long = String(position.coords.longitude);
