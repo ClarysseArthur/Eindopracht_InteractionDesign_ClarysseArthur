@@ -30,6 +30,12 @@ html {
     color: var(--global-text-color);
 }
 
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 ::-moz-selection {
     background: var(--color-selected);
@@ -86,6 +92,8 @@ html {
 .c-globe {
     height: 100vh;
     width: 100vw;
+    position: absolute;
+    top: 0;
 }
 
 /*? SETTINGS */
@@ -157,7 +165,7 @@ html {
 }
 
 .c-detail_master {
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: auto auto;
@@ -241,6 +249,31 @@ html {
     transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
 }
 
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #000;
+    border-color: #000 transparent #000 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 /*------------------------------------*\
 #UTILITIES
 \*------------------------------------*/
@@ -259,8 +292,9 @@ html {
 }
 
 .u-disabled{
-    background: gray !important;
-    border: gray !important;
+    /* background: gray !important;
+    border: gray !important; */
+    display: none;
 }
 
 /*------------------------------------*\
